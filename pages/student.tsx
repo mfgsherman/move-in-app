@@ -30,7 +30,7 @@ const StudentPage = () => (
                 </Tr>
                 <Tr backgroundColor="red.100">
                     <Td>Incomplete</Td>
-                    <Td>Nurse's Office</Td>
+                    <Td>Nurse&apos;s Office</Td>
                     <Td>Health Center Rm 107</Td>
                     <Td>9:30AM-2PM</Td>
                 </Tr>
