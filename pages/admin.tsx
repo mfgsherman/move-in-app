@@ -91,6 +91,7 @@ const AdminPage = () => {
 
     return (
         <Tabs>
+            {DrawerOptions()}
             <TabList>
                 <Tab>By Department</Tab>
                 <Tab>Students</Tab>
@@ -103,7 +104,6 @@ const AdminPage = () => {
                         px={0}
                     >
                       
-                  {DrawerOptions()}
                         <Accordion 
                             allowToggle
                             allowMultiple
