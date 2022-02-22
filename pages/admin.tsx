@@ -7,22 +7,67 @@ import {
     Tr,
     Th,
     Td,
-    Box
+    Box,
+    IconButton,
+    CloseButton,
+    Flex,
+    Icon,
+    Link,
+    Drawer,
+    DrawerCloseButton,
+    DrawerBody,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerContent,
+    Text,
+    useDisclosure,
+    BoxProps,
+    FlexProps,
+    useColorModeValue,
+    Button,
+    DrawerOverlay,
+    Input,
+    Stack
 } from '@chakra-ui/react';
+import React, {ReactNode} from 'react';
 import {
     Accordion,
     AccordionItem,
     AccordionButton,
     AccordionIcon,
-    AccordionPanel
+    AccordionPanel,
 } from '@chakra-ui/accordion'
+
+function DrawerOptions() {
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    return (
+        <>
+            <Button position='absolute' top='0' right='0' onClick={onOpen}>&gt;&gt;</Button>
+            <Drawer placement="right" onClose={onClose} isOpen={isOpen}>
+                <DrawerOverlay />
+                <DrawerContent>
+                    <DrawerHeader borderBottomWidth='1px'>Settings</DrawerHeader>
+                    <DrawerBody>
+                        <Stack direction='column' spacing={4}>
+                            <p><b>Upload CSV</b></p>
+                            <Input  p='1' type='file'/>
+                            <Button>Submit</Button>
+                        </Stack>
+                    </DrawerBody>
+                </DrawerContent>
+            </Drawer>
+        </>
+    )
+}
+
 
 const AdminPage = () => (
     <Container 
-        maxW="container.xl" 
-        py={20} 
-        px={0}
+    maxW="container.xl" 
+    py={20} 
+    px={0}
     >
+        {DrawerOptions()}
         <Accordion 
             allowToggle
             allowMultiple
