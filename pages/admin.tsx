@@ -115,7 +115,7 @@ const AdminPage = () => {
                                         textAlign='left'
                                     >
                                     <Heading 
-                                        color='red' 
+                                        color= "#b30838"
                                         pt={5}
                                     >
                                         Business Office
@@ -164,7 +164,7 @@ const AdminPage = () => {
                                         textAlign='left'
                                     >
                                     <Heading 
-                                        color='red' 
+                                        color= "#b30838" 
                                         pt={5}
                                     >
                                         Financial Aid
@@ -213,7 +213,7 @@ const AdminPage = () => {
                                         textAlign='left'
                                     >
                                     <Heading 
-                                        color='red' 
+                                        color= "#b30838" 
                                         pt={5}
                                     >
                                         Nurse&apos;s Office
@@ -262,7 +262,7 @@ const AdminPage = () => {
                                         textAlign='left'
                                     >
                                     <Heading 
-                                        color='red' 
+                                        color= "#b30838" 
                                         pt={5}
                                     >
                                         Parents
@@ -309,7 +309,7 @@ const AdminPage = () => {
                 </TabPanel>
                 <TabPanel>
                     <Container maxW="container.xl" py={20}>
-                        <Heading color="red">Students</Heading>
+                        <Heading color= "#b30838" >Students</Heading>
                         <Table variant='simple' backgroundColor="gray.200">
                             <Thead>
                                 <Tr>

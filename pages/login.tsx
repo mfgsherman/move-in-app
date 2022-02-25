@@ -38,13 +38,13 @@ const LoginPage = () => {
                 justifyContent="center"
                 alignItems="center"
             >
-                <Avatar bg="red" />
-                <Heading color="red">Move-In Day Checklist</Heading>
+                <Avatar bg="#b30838" />
+                <Heading color= "#b30838" >Move-In Day Checklist</Heading>
                 <Box minW={{ base: "90%", md: "468px" }} backgroundColor="whiteAlpha.900" boxShadow="md">
                     <Tabs>
                         <TabList>
-                            <Tab>Student</Tab>
-                            <Tab>Administrator</Tab>                        
+                            <Tab color = "#b30838" >Student</Tab>
+                            <Tab color = "#b30838" >Administrator</Tab>                        
                         </TabList>
                         <TabPanels>
                             <TabPanel>
@@ -53,15 +53,15 @@ const LoginPage = () => {
                                     <FormControl>
                                         <InputGroup>
                                         <InputLeftElement pointerEvents="none"/>
-                                        <Input type="username" placeholder="Enter ID or Lastname"/>
+                                        <Input colorScheme = "#b30838" type="username" placeholder="Enter ID or Lastname"/>
                                         </InputGroup>
                                     </FormControl>
                                     <Link href={"/student"} passHref>
                                         <Button
                                             borderRadius={0}
                                             type="submit"
-                                            variant="solid"
-                                            colorScheme="red"
+                                            variant="ghost"
+                                            color = "#b30838"
                                             width="full"
                                             >
                                             Login
@@ -88,7 +88,7 @@ const LoginPage = () => {
                                             
                                         />
                                         <InputRightElement width="4.5rem">
-                                            <Button h="1.75rem" size="sm" onClick={handleShowClick}>
+                                            <Button h="1.75rem" size="sm" color="#b30838" onClick={handleShowClick}>
                                             {showPassword ? "Hide" : "Show"}
                                             </Button>
                                         </InputRightElement>
@@ -98,8 +98,9 @@ const LoginPage = () => {
                                         <Button
                                             borderRadius={0}
                                             type="submit"
-                                            variant="solid"
-                                            colorScheme="red"
+                                            variant="ghost"
+                                            colorScheme = "gray"
+                                            color ="#b30838"
                                             width="full"
                                             >
                                             Login
