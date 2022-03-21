@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import {useState, useEffect } from "react";
 import {
     collection,
     QueryDocumentSnapshot,
@@ -23,6 +23,7 @@ import {
     Button,
     DrawerOverlay,
     Input,
+    InputGroup,
     Stack,
     Tab,
     Tabs, 
@@ -40,32 +41,12 @@ import {
 } from '@chakra-ui/accordion'
 import firestore from "../firebase/initialize";
 
-function DrawerOptions() {
-    const { isOpen, onOpen, onClose } = useDisclosure()
-    return (
-        <>
-            <Button position='absolute' top='0' right='0' onClick={onOpen}>&gt;&gt;</Button>
-            <Drawer placement="right" onClose={onClose} isOpen={isOpen}>
-                <DrawerOverlay />
-                <DrawerContent>
-                    <DrawerHeader borderBottomWidth='1px'>Settings</DrawerHeader>
-                    <DrawerBody>
-                        <Stack direction='column' spacing={4}>
-                            <p><b>Upload CSV</b></p>
-                            <Input  p='1' type='file'/>
-                            <Button>Submit</Button>
-                        </Stack>
-                    </DrawerBody>
-                </DrawerContent>
-            </Drawer>
-        </>
-    )
-}
-                      
+
 const AdminPage = () => {
     const studentCollection = collection(firestore, 'student-data');
     const [students, setStudents] = useState<QueryDocumentSnapshot<DocumentData>[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const {isOpen, onOpen, onClose} = useDisclosure();
 
     const getStudents = async () => {
         const querySnapshot = await getDocs(studentCollection);
@@ -88,10 +69,38 @@ const AdminPage = () => {
     const finAidStudents = students.filter((student) => !student.get('finAid'));
     const nurseStudents = students.filter((student) => !student.get('nurse'));
     const parentsStudents = students.filter((student) => !student.get('parents'));
+    
+    const [search, setSearch] = React.useState('');
+    const handleSearch = (event: React.ChangeEvent<any>) => {
+        setSearch(event.target.value);
+    };
+
+    const data = { 
+        students: students.filter((student) =>
+        student.get('lastName').includes(search)
+        ),
+      };
+
+     
+
 
     return (
         <Tabs>
-            {DrawerOptions()}
+            <Button position='absolute' top='0' right='0' onClick={onOpen}>&gt;&gt;</Button>
+             <Drawer placement="right" onClose={onClose} isOpen={isOpen}>
+                 <DrawerOverlay />
+                 <DrawerContent>
+                     <DrawerHeader borderBottomWidth='1px'>Settings</DrawerHeader>
+                     <DrawerBody>
+                         <Stack direction='column' spacing={4}>
+                             <p><b>Upload CSV</b></p>
+                             <Input  p='1' type='file'/>
+                             <Button>Submit</Button>
+                         </Stack>
+                     </DrawerBody>
+                 </DrawerContent>
+             </Drawer>
+
             <TabList>
                 <Tab>By Department</Tab>
                 <Tab>Students</Tab>
@@ -308,9 +317,18 @@ const AdminPage = () => {
                     </Container>
                 </TabPanel>
                 <TabPanel>
+                    <InputGroup size='md'>
+                        <Input
+                        id="search"
+                        width="20%" 
+                        placeholder='Search Students' 
+                        value={search}
+                        onChange={handleSearch}
+                        />
+                    </InputGroup>
                     <Container maxW="container.xl" py={20}>
                         <Heading color="red">Students</Heading>
-                        <Table variant='simple' backgroundColor="gray.200">
+                        <Table  data={data} id='studentTable' variant='simple' backgroundColor="gray.200">
                             <Thead>
                                 <Tr>
                                     <Th>Student ID</Th>
