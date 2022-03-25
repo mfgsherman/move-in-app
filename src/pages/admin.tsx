@@ -82,8 +82,7 @@ const AdminPage = () => {
         students.filter((student) =>
             student.get('lastName').toLowerCase().includes(search.toLowerCase()) ||
             student.get('firstName').toLowerCase().includes(search.toLowerCase()) ||
-            student.get('studentId').toString().includes(search) ||
-            student.get('admit').toLowerCase().includes(search.toLowerCase())
+            student.get('studentId').toString().includes(search)
         )
     )
 
@@ -315,7 +314,7 @@ const AdminPage = () => {
                         <Input
                         id="search"
                         width="20%" 
-                        placeholder='Search Students' 
+                        placeholder='Look up students by name or ID' 
                         value={search}
                         onChange={handleSearch}
                         />

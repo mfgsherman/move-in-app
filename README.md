@@ -9,6 +9,8 @@ Then, install dependencies:
 npm install
 ```
 
+Add the `.env` file with the necessary secrets locally.
+
 To run the development server:
 
 ```bash
@@ -32,9 +34,9 @@ To run the built app in production mode:
 npm start
 ```
 
-## Learn More
+## Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+* [NextJS](https://nextjs.org/)
+* [TypeScript](https://www.typescriptlang.org/)
+* [ESlint](https://eslint.org/)
+* [Firebase](https://firebase.google.com/)
