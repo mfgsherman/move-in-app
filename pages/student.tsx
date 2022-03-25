@@ -8,6 +8,7 @@ import {
     where, 
     limit
 } from "@firebase/firestore";
+import {firestore} from '../firebase/initialize';
 import {
     Container,
     Heading,
@@ -21,7 +22,6 @@ import {
     GridItem,
     Flex
 } from '@chakra-ui/react';
-import firestore from '../firebase/initialize';
 import {
     Accordion,
     AccordionItem,
@@ -63,7 +63,7 @@ const StudentPage = () => {
 
     return (
         <Container maxW="container.xl" py={20}>
-            <Heading color="red">{loading ? null : students[0].get('firstName') + ' ' + students[0].get('lastName')}</Heading>
+            <Heading color = "gray" >{loading ? null : students[0].get('firstName') + ' ' + students[0].get('lastName')}</Heading>
             <Accordion allowMultiple>
                 <Table variant='simple'>
                     <Flex

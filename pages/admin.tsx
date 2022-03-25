@@ -15,38 +15,31 @@ import {
     Th,
     Td,
     Box,
-    Drawer,
-    DrawerBody,
-    DrawerHeader,
-    DrawerContent,
-    useDisclosure,
-    Button,
-    DrawerOverlay,
-    Input,
-    InputGroup,
-    Stack,
     Tab,
     Tabs, 
     TabList,
     TabPanel,
     TabPanels
 } from '@chakra-ui/react';
-import React, {ReactNode} from 'react';
 import {
     Accordion,
     AccordionItem,
     AccordionButton,
     AccordionIcon,
     AccordionPanel,
-} from '@chakra-ui/accordion'
-import firestore from "../firebase/initialize";
-
-
+} from '@chakra-ui/accordion';
+import {firestore} from "../firebase/initialize";
+import {IStudent, setStudentDataFromCSV, uploadStudentData} from '../firebase/upload-pdf';
+import PDFUpload from './pdf-upload';
+                      
 const AdminPage = () => {
     const studentCollection = collection(firestore, 'student-data');
     const [students, setStudents] = useState<QueryDocumentSnapshot<DocumentData>[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const {isOpen, onOpen, onClose} = useDisclosure();
+
+    const [studentData, setStudentData] = useState<IStudent[]>([]);
+    const [studentDataLoading, setStudentDataLoading] = useState<boolean>(false);
 
     const getStudents = async () => {
         const querySnapshot = await getDocs(studentCollection);
@@ -64,6 +57,13 @@ const AdminPage = () => {
             setLoading(false);
         }, 2000)
     });
+
+    const onUploadClick = async (): Promise<void> => {
+        uploadStudentData(studentData);
+    }
+
+    const onChange = (event: React.ChangeEvent<HTMLInputElement>): void =>
+        setStudentDataFromCSV(event, setStudentData, setStudentDataLoading);
 
     const busOffStudents = students.filter((student) => !student.get('busOff'));
     const finAidStudents = students.filter((student) => !student.get('finAid'));
@@ -86,21 +86,11 @@ const AdminPage = () => {
 
     return (
         <Tabs>
-            <Button position='absolute' top='0' right='0' onClick={onOpen}>&gt;&gt;</Button>
-             <Drawer placement="right" onClose={onClose} isOpen={isOpen}>
-                 <DrawerOverlay />
-                 <DrawerContent>
-                     <DrawerHeader borderBottomWidth='1px'>Settings</DrawerHeader>
-                     <DrawerBody>
-                         <Stack direction='column' spacing={4}>
-                             <p><b>Upload CSV</b></p>
-                             <Input  p='1' type='file'/>
-                             <Button>Submit</Button>
-                         </Stack>
-                     </DrawerBody>
-                 </DrawerContent>
-             </Drawer>
-
+            <PDFUpload
+                onChange={onChange}
+                onUploadClick={onUploadClick}
+            >
+            </PDFUpload>
             <TabList>
                 <Tab>By Department</Tab>
                 <Tab>Students</Tab>
@@ -111,8 +101,7 @@ const AdminPage = () => {
                         maxW="container.xl" 
                         py={20} 
                         px={0}
-                    >
-                      
+                    > 
                         <Accordion 
                             allowToggle
                             allowMultiple
@@ -124,7 +113,7 @@ const AdminPage = () => {
                                         textAlign='left'
                                     >
                                     <Heading 
-                                        color='red' 
+                                        color= "#b30838"
                                         pt={5}
                                     >
                                         Business Office
@@ -173,7 +162,7 @@ const AdminPage = () => {
                                         textAlign='left'
                                     >
                                     <Heading 
-                                        color='red' 
+                                        color= "#b30838" 
                                         pt={5}
                                     >
                                         Financial Aid
@@ -222,7 +211,7 @@ const AdminPage = () => {
                                         textAlign='left'
                                     >
                                     <Heading 
-                                        color='red' 
+                                        color= "#b30838" 
                                         pt={5}
                                     >
                                         Nurse&apos;s Office
@@ -271,7 +260,7 @@ const AdminPage = () => {
                                         textAlign='left'
                                     >
                                     <Heading 
-                                        color='red' 
+                                        color= "#b30838" 
                                         pt={5}
                                     >
                                         Parents
@@ -327,7 +316,7 @@ const AdminPage = () => {
                         />
                     </InputGroup>
                     <Container maxW="container.xl" py={20}>
-                        <Heading color="red">Students</Heading>
+                        <Heading color= "#b30838" >Students</Heading>
                         <Table  data={data} id='studentTable' variant='simple' backgroundColor="gray.200">
                             <Thead>
                                 <Tr>
