@@ -8,6 +8,7 @@ import {
     where, 
     limit
 } from "@firebase/firestore";
+import {firestore} from '../firebase/initialize';
 import {
     Container,
     Heading,
@@ -21,7 +22,6 @@ import {
     GridItem,
     Flex
 } from '@chakra-ui/react';
-import firestore from '../firebase/initialize';
 import {
     Accordion,
     AccordionItem,
