@@ -1,4 +1,4 @@
-import {useState, useEffect } from "react";
+import {useState, useEffect, ChangeEvent} from "react";
 import {
     collection,
     QueryDocumentSnapshot,
@@ -19,7 +19,10 @@ import {
     Tabs, 
     TabList,
     TabPanel,
-    TabPanels
+    TabPanels,
+    Input,
+    InputGroup,
+    useDisclosure
 } from '@chakra-ui/react';
 import {
     Accordion,
@@ -70,8 +73,8 @@ const AdminPage = () => {
     const nurseStudents = students.filter((student) => !student.get('nurse'));
     const parentsStudents = students.filter((student) => !student.get('parents'));
     
-    const [search, setSearch] = React.useState('');
-    const handleSearch = (event: React.ChangeEvent<any>) => {
+    const [search, setSearch] = useState('');
+    const handleSearch = (event: ChangeEvent<any>) => {
         setSearch(event.target.value);
     };
 
@@ -80,9 +83,6 @@ const AdminPage = () => {
         student.get('lastName').includes(search)
         ),
       };
-
-     
-
 
     return (
         <Tabs>
