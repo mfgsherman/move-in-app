@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import {useState, useEffect, ChangeEvent} from "react";
 import {
     collection,
     QueryDocumentSnapshot,
@@ -19,7 +19,10 @@ import {
     Tabs, 
     TabList,
     TabPanel,
-    TabPanels
+    TabPanels,
+    Input,
+    InputGroup,
+    useDisclosure
 } from '@chakra-ui/react';
 import {
     Accordion,
@@ -36,6 +39,7 @@ const AdminPage = () => {
     const studentCollection = collection(firestore, 'student-data');
     const [students, setStudents] = useState<QueryDocumentSnapshot<DocumentData>[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const {isOpen, onOpen, onClose} = useDisclosure();
 
     const [studentData, setStudentData] = useState<IStudent[]>([]);
     const [studentDataLoading, setStudentDataLoading] = useState<boolean>(false);
@@ -68,6 +72,22 @@ const AdminPage = () => {
     const finAidStudents = students.filter((student) => !student.get('finAid'));
     const nurseStudents = students.filter((student) => !student.get('nurse'));
     const parentsStudents = students.filter((student) => !student.get('parents'));
+    
+    const [search, setSearch] = useState('');
+    const handleSearch = (event: ChangeEvent<any>) => {
+        setSearch(event.target.value.trim());
+    };
+
+    const filterStudents = (students: QueryDocumentSnapshot<DocumentData>[]): QueryDocumentSnapshot<DocumentData>[] => (
+        students.filter((student) =>
+            student.get('lastName').toLowerCase().includes(search.toLowerCase()) ||
+            student.get('firstName').toLowerCase().includes(search.toLowerCase()) ||
+            student.get('studentId').toString().includes(search) ||
+            student.get('admit').toLowerCase().includes(search.toLowerCase())
+        )
+    )
+
+    const filteredStudents = filterStudents(students);
 
     return (
         <Tabs>
@@ -291,9 +311,18 @@ const AdminPage = () => {
                     </Container>
                 </TabPanel>
                 <TabPanel>
+                    <InputGroup size='md'>
+                        <Input
+                        id="search"
+                        width="20%" 
+                        placeholder='Search Students' 
+                        value={search}
+                        onChange={handleSearch}
+                        />
+                    </InputGroup>
                     <Container maxW="container.xl" py={20}>
                         <Heading color= "#b30838" >Students</Heading>
-                        <Table variant='simple' backgroundColor="gray.200">
+                        <Table id='studentTable' variant='simple' backgroundColor="gray.200">
                             <Thead>
                                 <Tr>
                                     <Th>Student ID</Th>
@@ -308,8 +337,8 @@ const AdminPage = () => {
                             </Thead>
                             <Tbody>
                                 {
-                                    loading || students.length === 0 ? (null) : (
-                                        students.map((student) => (
+                                    loading || filteredStudents.length === 0 ? (null) : (
+                                        filteredStudents.map((student) => (
                                             <Tr 
                                                 key={student.get('studentId')}
                                             >
