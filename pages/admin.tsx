@@ -75,14 +75,19 @@ const AdminPage = () => {
     
     const [search, setSearch] = useState('');
     const handleSearch = (event: ChangeEvent<any>) => {
-        setSearch(event.target.value);
+        setSearch(event.target.value.trim());
     };
 
-    const data = { 
-        students: students.filter((student) =>
-        student.get('lastName').includes(search)
-        ),
-      };
+    const filterStudents = (students: QueryDocumentSnapshot<DocumentData>[]): QueryDocumentSnapshot<DocumentData>[] => (
+        students.filter((student) =>
+            student.get('lastName').toLowerCase().includes(search.toLowerCase()) ||
+            student.get('firstName').toLowerCase().includes(search.toLowerCase()) ||
+            student.get('studentId').toString().includes(search) ||
+            student.get('admit').toLowerCase().includes(search.toLowerCase())
+        )
+    )
+
+    const filteredStudents = filterStudents(students);
 
     return (
         <Tabs>
@@ -317,7 +322,7 @@ const AdminPage = () => {
                     </InputGroup>
                     <Container maxW="container.xl" py={20}>
                         <Heading color= "#b30838" >Students</Heading>
-                        <Table  data={data} id='studentTable' variant='simple' backgroundColor="gray.200">
+                        <Table id='studentTable' variant='simple' backgroundColor="gray.200">
                             <Thead>
                                 <Tr>
                                     <Th>Student ID</Th>
@@ -332,8 +337,8 @@ const AdminPage = () => {
                             </Thead>
                             <Tbody>
                                 {
-                                    loading || students.length === 0 ? (null) : (
-                                        students.map((student) => (
+                                    loading || filteredStudents.length === 0 ? (null) : (
+                                        filteredStudents.map((student) => (
                                             <Tr 
                                                 key={student.get('studentId')}
                                             >
