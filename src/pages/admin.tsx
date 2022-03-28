@@ -86,6 +86,16 @@ const AdminPage = () => {
         )
     )
 
+    students.sort((a, b) => {
+        if(a.get('lastName') < b.get('lastName')) {
+            return -1;
+        }
+        if(a.get('lastName') > b.get('lastName')){
+            return 1;
+        } return 0;
+    });
+
+
     const filteredStudents = filterStudents(students);
 
     return (
