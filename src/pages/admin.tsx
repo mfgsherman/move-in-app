@@ -1,10 +1,12 @@
 import {useState, useEffect, ChangeEvent} from "react";
+import {useRouter} from "next/router";
 import {
     collection,
     QueryDocumentSnapshot,
     DocumentData,
     getDocs
 } from "@firebase/firestore";
+import {User} from 'firebase/auth';
 import { 
     Container,
     Heading,
@@ -22,7 +24,7 @@ import {
     TabPanels,
     Input,
     InputGroup,
-    useDisclosure
+    Button
 } from '@chakra-ui/react';
 import {
     Accordion,
@@ -31,15 +33,16 @@ import {
     AccordionIcon,
     AccordionPanel,
 } from '@chakra-ui/accordion';
-import {firestore} from "../firebase/initialize";
+import {firestore, auth} from "../firebase/initialize";
 import {IStudent, setStudentDataFromCSV, uploadStudentData} from '../firebase/upload-pdf';
 import PDFUpload from './pdf-upload';
+import AdminLogin from "./adminLogin";
                       
 const AdminPage = () => {
+    const router = useRouter();
     const studentCollection = collection(firestore, 'student-data');
     const [students, setStudents] = useState<QueryDocumentSnapshot<DocumentData>[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const {isOpen, onOpen, onClose} = useDisclosure();
 
     const [studentData, setStudentData] = useState<IStudent[]>([]);
     const [studentDataLoading, setStudentDataLoading] = useState<boolean>(false);
@@ -95,10 +98,30 @@ const AdminPage = () => {
         } return 0;
     });
 
-
     const filteredStudents = filterStudents(students);
 
+    const logout = () => {
+        auth.signOut();
+        router.push('/admin');
+    }
+
+    if (!auth.currentUser) {
+        return <AdminLogin />
+    }
+
     return (
+        <>
+         <Button
+            borderRadius={0}
+            color ="#b30838"
+            colorScheme = "gray"
+            onClick={logout}
+            type="submit"
+            variant="ghost"
+            width="full"
+            >
+            Sign out
+        </Button>
         <Tabs>
             <PDFUpload
                 onChange={onChange}
@@ -369,6 +392,7 @@ const AdminPage = () => {
                 </TabPanel>
             </TabPanels>
         </Tabs>
+        </>
     )
 };
 
