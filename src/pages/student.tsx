@@ -1,12 +1,17 @@
 import {useState, useEffect} from 'react';
+import {useRouter} from 'next/router';
 import {
     collection,
     QueryDocumentSnapshot,
+    DocumentSnapshot,
     DocumentData,
     getDocs,
-    query,
+    query as firestoreQuery,
     where, 
-    limit
+    limit,
+    doc,
+    getDoc,
+    getDocFromCache
 } from "@firebase/firestore";
 import {firestore} from '../firebase/initialize';
 import {
@@ -31,39 +36,45 @@ import {
 } from '@chakra-ui/accordion'
  
 const StudentPage = () => {
-    const studentCollection = collection(firestore, 'student-data');
-    const [students, setStudents] = useState<QueryDocumentSnapshot<DocumentData>[]>([]);
+    const [student, setStudent] = useState<DocumentSnapshot<DocumentData>>();
     const [loading, setLoading] = useState<boolean>(true);
+    const {query} = useRouter();
+    const id = query.id as string;
+    const studentRef = doc(firestore, 'student-data', id);
 
-    const getStudents = async () => {
-        // John Smith:
-        const studentQuery = query(studentCollection, where('studentId', '==', 2038452), limit(1));
-        // Ben Ptak: 
-        // const studentQuery = query(studentCollection, where('studentId', '==', 1234567), limit(1));
-        // Michael Monares: 
-        // const studentQuery = query(studentCollection, where('studentId', '==', 7654321), limit(1));
-        // Liam Elder: 
-        // const studentQuery = query(studentCollection, where('studentId', '==', 6666666), limit(1));
-
-        const querySnapshot = await getDocs(studentQuery);
-        const result: QueryDocumentSnapshot<DocumentData>[] = [];
-        querySnapshot.forEach((snapshot) => {
-            result.push(snapshot);
-        });
-        setStudents(result);
+    const getStudent = async () => {
+        await getDoc(studentRef)
+            .then(async (cacheStudentSnap) => {
+                if (cacheStudentSnap.exists()) {
+                    setStudent(cacheStudentSnap);
+                    setLoading(false);
+                }
+            })
+        
+            // await getDocFromCache(studentRef)
+            // .then(async (cacheStudentSnap) => {
+            //     if (cacheStudentSnap.exists()) {
+            //         setStudent(cacheStudentSnap);
+            //         setLoading(false);
+            //     } else {
+            //         await getDocFromCache(studentRef)
+            //             .then((serverStudentSnap) => {
+            //                 if (serverStudentSnap.exists()) {
+            //                     setStudent(serverStudentSnap);
+            //                     setLoading(false);
+            //                 }
+            //             })
+            //     }
+            // })
     };
 
     useEffect(() => {
-        getStudents();
-
-        setTimeout(() => {
-            setLoading(false);
-        }, 2000)
+        getStudent();
     });
 
     return (
         <Container maxW="container.xl" py={20}>
-            <Heading color = "gray" >{loading ? null : students[0].get('firstName') + ' ' + students[0].get('lastName')}</Heading>
+            <Heading color = "gray" >{loading || !student ? null : student.get('firstName') + ' ' + student.get('lastName')}</Heading>
             <Accordion allowMultiple>
                 <Table variant='simple'>
                     <Flex
@@ -95,10 +106,10 @@ const StudentPage = () => {
                         <Tbody>
                             <AccordionItem>
                                 <AccordionButton>
-                                    <Tr backgroundColor={loading ? 'gray.100' : students[0].get('busOff') ? 'green.100' : 'red.100'}>
+                                    <Tr backgroundColor={loading || !student ? 'gray.100' : student.get('busOff') ? 'green.100' : 'red.100'}>
                                         <Grid templateColumns='repeat(4, 1fr)' gap={4}>
                                             <GridItem w={[100,200,300]} >
-                                                <Td h={['110px', '80px', '50px', '50px']}>{loading ? 'Loading' : students[0].get('busOff') ? 'Complete' : 'Incomplete'}</Td>
+                                                <Td h={['110px', '80px', '50px', '50px']}>{loading || !student ? 'Loading' : student.get('busOff') ? 'Complete' : 'Incomplete'}</Td>
                                             </GridItem>
                                             <GridItem w={[100,200,300]} >
                                                 <Td h={['110px', '80px', '50px', '50px']}>Business Office</Td>
@@ -123,10 +134,10 @@ const StudentPage = () => {
                             </AccordionItem>
                             <AccordionItem>
                                 <AccordionButton>
-                                    <Tr backgroundColor={loading ? 'gray.100' : students[0].get('finAid') ? 'green.100' : 'red.100'}>
+                                    <Tr backgroundColor={loading || !student ? 'gray.100' : student.get('finAid') ? 'green.100' : 'red.100'}>
                                         <Grid templateColumns='repeat(4, 1fr)' gap={4}>
                                             <GridItem w={[100,200,300]} >
-                                                <Td h={['110px', '80px', '50px', '50px']}>{loading ? 'Loading' : students[0].get('finAid') ? 'Complete' : 'Incomplete'}</Td>
+                                                <Td h={['110px', '80px', '50px', '50px']}>{loading || !student ? 'Loading' : student.get('finAid') ? 'Complete' : 'Incomplete'}</Td>
                                             </GridItem>
                                             <GridItem w={[100,200,300]} >
                                                 <Td h={['110px', '80px', '50px', '50px']}>Financial Aid</Td>
@@ -150,10 +161,10 @@ const StudentPage = () => {
                             </AccordionItem>
                             <AccordionItem>
                                 <AccordionButton>
-                                    <Tr backgroundColor={loading ? 'gray.100' : students[0].get('nurse') ? 'green.100' : 'red.100'}>
+                                    <Tr backgroundColor={loading || !student ? 'gray.100' : student.get('nurse') ? 'green.100' : 'red.100'}>
                                         <Grid templateColumns='repeat(4, 1fr)' gap={4}>
                                             <GridItem w={[100,200,300]} >
-                                                    <Td h={['110px', '80px', '50px', '50px']}>{loading ? 'Loading' : students[0].get('nurse') ? 'Complete' : 'Incomplete'}</Td>
+                                                    <Td h={['110px', '80px', '50px', '50px']}>{loading || !student ? 'Loading' : student.get('nurse') ? 'Complete' : 'Incomplete'}</Td>
                                             </GridItem>
                                             <GridItem w={[100,200,300]} >
                                                 <Td h={['110px', '80px', '50px', '50px']}>Nurse&apos;s Office</Td>
@@ -180,10 +191,10 @@ const StudentPage = () => {
                             </AccordionItem>
                             <AccordionItem>
                                 <AccordionButton>
-                                    <Tr backgroundColor={loading ? 'gray.100' : students[0].get('parents') ? 'green.100' : 'red.100'}>
+                                    <Tr backgroundColor={loading || !student ? 'gray.100' : student.get('parents') ? 'green.100' : 'red.100'}>
                                         <Grid templateColumns='repeat(4, 1fr)' gap={4}>
                                             <GridItem w={[100,200,300]} >
-                                                <Td h={['110px', '80px', '50px', '50px']}>{loading ? 'Loading' : students[0].get('parents') ? 'Complete' : 'Incomplete'}</Td>
+                                                <Td h={['110px', '80px', '50px', '50px']}>{loading || !student ? 'Loading' : student.get('parents') ? 'Complete' : 'Incomplete'}</Td>
                                             </GridItem>
                                             <GridItem w={[100,200,300]} >
                                                 <Td h={['110px', '80px', '50px', '50px']}>Parents</Td>
