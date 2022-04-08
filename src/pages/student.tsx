@@ -1,17 +1,10 @@
 import {useState, useEffect} from 'react';
 import {useRouter} from 'next/router';
 import {
-    collection,
-    QueryDocumentSnapshot,
     DocumentSnapshot,
     DocumentData,
-    getDocs,
-    query as firestoreQuery,
-    where, 
-    limit,
     doc,
-    getDoc,
-    getDocFromCache
+    getDoc
 } from "@firebase/firestore";
 import {firestore} from '../firebase/initialize';
 import {
@@ -34,13 +27,19 @@ import {
     AccordionIcon,
     AccordionPanel
 } from '@chakra-ui/accordion'
+import {ParsedUrlQuery} from 'querystring';
+import {GetServerSidePropsContext} from 'next';
+
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+    const id = context.query.id;
+
+    return {props: {id}}
+}
  
-const StudentPage = () => {
+const StudentPage = ({id}: ParsedUrlQuery) => {
     const [student, setStudent] = useState<DocumentSnapshot<DocumentData>>();
     const [loading, setLoading] = useState<boolean>(true);
-    const {query} = useRouter();
-    const id = query.id as string;
-    const studentRef = doc(firestore, 'student-data', id);
+    const studentRef = doc(firestore, 'student-data', id as string);
 
     const getStudent = async () => {
         await getDoc(studentRef)
@@ -50,22 +49,6 @@ const StudentPage = () => {
                     setLoading(false);
                 }
             })
-        
-            // await getDocFromCache(studentRef)
-            // .then(async (cacheStudentSnap) => {
-            //     if (cacheStudentSnap.exists()) {
-            //         setStudent(cacheStudentSnap);
-            //         setLoading(false);
-            //     } else {
-            //         await getDocFromCache(studentRef)
-            //             .then((serverStudentSnap) => {
-            //                 if (serverStudentSnap.exists()) {
-            //                     setStudent(serverStudentSnap);
-            //                     setLoading(false);
-            //                 }
-            //             })
-            //     }
-            // })
     };
 
     useEffect(() => {
@@ -222,4 +205,3 @@ const StudentPage = () => {
 };
 
 export default StudentPage;
-
