@@ -6,7 +6,6 @@ import {
     DocumentData,
     getDocs
 } from "@firebase/firestore";
-import {User} from 'firebase/auth';
 import { 
     Container,
     Heading,
@@ -35,7 +34,7 @@ import {
 } from '@chakra-ui/accordion';
 import {firestore, auth} from "../firebase/initialize";
 import {IStudent, setStudentDataFromCSV, uploadStudentData} from '../firebase/upload-pdf';
-import PDFUpload from './pdf-upload';
+import PDFUpload from '../components/pdf-upload';
 import AdminLogin from "./adminLogin";
                       
 const AdminPage = () => {

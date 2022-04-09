@@ -1,16 +1,8 @@
 import {useState, useEffect, ChangeEvent} from "react";
 import {useRouter} from "next/router";
 import {
-    collection,
-    QueryDocumentSnapshot,
-    DocumentData,
-    getDocs,
     doc,
-    getDoc,
-    query,
-    where, 
-    limit,
-    documentId
+    getDoc
 } from "@firebase/firestore";
 import {
     Flex,
@@ -56,14 +48,6 @@ const LoginPage = () => {
                 setErrorMessage(`${error.code}: ${error.message}`);
             }) 
     }
-
-    // useEffect(() => {
-    //     getStudents();
-
-    //     setTimeout(() => {
-    //         setLoading(false);
-    //     }, 2000)
-    // });
 
     return (
         <Flex
