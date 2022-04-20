@@ -82,6 +82,6 @@ export const setStudentDataFromCSV = (
 
 export const uploadStudentData = (studentData: IStudent[]) => {
     studentData.forEach(student => {
-        setDoc(doc(firestore, 'student-data ' + new Date(), student.studentId.toString()), student);
+        setDoc(doc(firestore, 'student-data', student.studentId.toString()), student);
     })
 }
