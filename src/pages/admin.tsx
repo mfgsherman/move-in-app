@@ -5,10 +5,8 @@ import {
     QueryDocumentSnapshot,
     DocumentData,
     getDocs,
-    doc,
     query,
     limit,
-    getDoc,
     orderBy
 } from "@firebase/firestore";
 import { 
@@ -51,7 +49,7 @@ const AdminPage = () => {
     const [studentDataLoading, setStudentDataLoading] = useState<boolean>(false);
     const [search, setSearch] = useState('');
 
-    const studentQuery = query(collection(firestore, 'development'), orderBy('date', 'desc'), limit(1));
+    const datesQuery = query(collection(firestore, 'development'), orderBy('date', 'desc'), limit(1));
 
     const busOffStudents = students.filter((student) => !student.get('busOff'));
     const finAidStudents = students.filter((student) => !student.get('finAid'));
@@ -74,15 +72,12 @@ const AdminPage = () => {
     }
 
     const getStudents = async () => {
-        await getDocs(studentQuery)
+        await getDocs(datesQuery)
             .then(async (dateSnapshot) => {
-                console.log('datesnapshot: ', dateSnapshot);
                 const date = dateSnapshot.docs[0].get('date');
 
                 await getDocs(query(collection(firestore, `development/${date}/student-data`), orderBy('lastName')))
                     .then((studentSnapshot) => {
-                        console.log('studentsnapshot: ', studentSnapshot);
-
                         const result: QueryDocumentSnapshot<DocumentData>[] = [];
                         studentSnapshot.forEach((student) => {
                             result.push(student);

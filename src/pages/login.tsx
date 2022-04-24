@@ -1,8 +1,13 @@
-import {useState, useEffect, ChangeEvent} from "react";
+import {useState, ChangeEvent} from "react";
 import {useRouter} from "next/router";
 import {
     doc,
-    getDoc
+    getDoc,
+    query,
+    collection,
+    orderBy,
+    limit,
+    getDocs
 } from "@firebase/firestore";
 import {
     Flex,
@@ -22,9 +27,12 @@ import {
 import {firestore} from '../firebase/initialize';
 
 const LoginPage = () => {
-    const router = useRouter(); 
+    const router = useRouter();
+
     const [id, setId] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const datesQuery = query(collection(firestore, 'development'), orderBy('date', 'desc'), limit(1));
+
     const handleChange = (event: ChangeEvent<any>) => {
         setId(event.target.value);
     }
@@ -32,21 +40,31 @@ const LoginPage = () => {
     const authenticate = async (event: ChangeEvent<any>) => {
         event.preventDefault();
 
-        const studentRef = doc(firestore, 'student-data', id);
-        await getDoc(studentRef)
-            .then((studentSnap) => {
-                if (studentSnap.exists()) {
-                    router.push({
-                        pathname: '/student',
-                        query: {id: id}
-                    });
-                } else {
-                    setErrorMessage('Student ID not found');
-                }
+        await getDocs(datesQuery)
+            .then(async (dateSnapshot) => {
+                const date = dateSnapshot.docs[0].get('date');
+
+                await getDoc(doc(firestore, `development/${date}/student-data`, id))
+                    .then((studentSnap) => {
+                        if (studentSnap.exists()) {
+                            router.push({
+                                pathname: '/student',
+                                query: {
+                                    id: id,
+                                    lastUpdated: date
+                                }
+                            });
+                        } else {
+                            setErrorMessage('Student ID not found');
+                        }
+                    })
+                    .catch((error) => {
+                        setErrorMessage(`${error.code}: ${error.message}`);
+                    })
             })
             .catch((error) => {
                 setErrorMessage(`${error.code}: ${error.message}`);
-            }) 
+            })
     }
 
     return (

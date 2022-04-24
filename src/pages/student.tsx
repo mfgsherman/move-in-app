@@ -11,15 +11,16 @@ import {ParsedUrlQuery} from 'querystring';
 import StudentChecklist from '../components/student/student-checklist';
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-    const id = context.query.id;
+    const {id, lastUpdated} = context.query;
 
-    return {props: {id}}
+    return {props: {id, lastUpdated}}
 }
  
-const StudentPage = ({id}: ParsedUrlQuery) => {
+const StudentPage = ({id, lastUpdated}: ParsedUrlQuery) => {
     const [student, setStudent] = useState<DocumentSnapshot<DocumentData>>();
     const [loading, setLoading] = useState<boolean>(true);
-    const studentRef = doc(firestore, 'student-data', id as string);
+
+    const studentRef = doc(firestore, `development/${lastUpdated}/student-data`, id as string);
 
     const getStudent = async () => {
         await getDoc(studentRef)
