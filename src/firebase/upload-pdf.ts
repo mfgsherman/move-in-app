@@ -1,6 +1,7 @@
 import {
     doc,
-    setDoc
+    setDoc,
+    collection
 } from "@firebase/firestore";
 import XLSX from 'xlsx';
 import {firestore} from "./initialize";
@@ -81,7 +82,11 @@ export const setStudentDataFromCSV = (
 };
 
 export const uploadStudentData = (studentData: IStudent[]) => {
-    studentData.forEach(student => {
-        setDoc(doc(firestore, 'student-data ' + new Date(), student.studentId.toString()), student);
+    const date = new Date().toISOString();
+
+    setDoc(doc(firestore, 'development', date), {date: date});
+    
+    studentData.forEach((student) => {
+        setDoc(doc(firestore, `development/${date}/student-data`, student.studentId.toString()), student);
     })
 }

@@ -4,7 +4,12 @@ import {
     collection,
     QueryDocumentSnapshot,
     DocumentData,
-    getDocs
+    getDocs,
+    doc,
+    query,
+    limit,
+    getDoc,
+    orderBy
 } from "@firebase/firestore";
 import { 
     Container,
@@ -39,70 +44,59 @@ import AdminLogin from "./adminLogin";
                       
 const AdminPage = () => {
     const router = useRouter();
-    const studentCollection = collection(firestore, 'student-data');
+
     const [students, setStudents] = useState<QueryDocumentSnapshot<DocumentData>[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-
     const [studentData, setStudentData] = useState<IStudent[]>([]);
     const [studentDataLoading, setStudentDataLoading] = useState<boolean>(false);
+    const [search, setSearch] = useState('');
 
-    const getStudents = async () => {
-        const querySnapshot = await getDocs(studentCollection);
-        const result: QueryDocumentSnapshot<DocumentData>[] = [];
-        querySnapshot.forEach((snapshot) => {
-            result.push(snapshot);
-        });
-        setStudents(result);
-    };
-
-    useEffect(() => {
-        getStudents();
-
-        setTimeout(() => {
-            setLoading(false);
-        }, 2000)
-    });
-
-    const onUploadClick = async (): Promise<void> => {
-        uploadStudentData(studentData);
-    }
-
-    const onChange = (event: React.ChangeEvent<HTMLInputElement>): void =>
-        setStudentDataFromCSV(event, setStudentData, setStudentDataLoading);
+    const studentQuery = query(collection(firestore, 'development'), orderBy('date', 'desc'), limit(1));
 
     const busOffStudents = students.filter((student) => !student.get('busOff'));
     const finAidStudents = students.filter((student) => !student.get('finAid'));
     const nurseStudents = students.filter((student) => !student.get('nurse'));
     const parentsStudents = students.filter((student) => !student.get('parents'));
     
-    const [search, setSearch] = useState('');
-    const handleSearch = (event: ChangeEvent<any>) => {
-        setSearch(event.target.value.trim());
-    };
-
-    const filterStudents = (students: QueryDocumentSnapshot<DocumentData>[]): QueryDocumentSnapshot<DocumentData>[] => (
+    const filterSearch = (students: QueryDocumentSnapshot<DocumentData>[]): QueryDocumentSnapshot<DocumentData>[] => (
         students.filter((student) =>
             student.get('lastName').toLowerCase().includes(search.toLowerCase()) ||
             student.get('firstName').toLowerCase().includes(search.toLowerCase()) ||
             student.get('studentId').toString().includes(search)
         )
-    )
+    );
 
-    students.sort((a, b) => {
-        if(a.get('lastName') < b.get('lastName')) {
-            return -1;
-        }
-        if(a.get('lastName') > b.get('lastName')){
-            return 1;
-        } return 0;
-    });
-
-    const filteredStudents = filterStudents(students);
+    const filteredStudents = filterSearch(students);
 
     const logout = () => {
         auth.signOut();
         router.push('/admin');
     }
+
+    const getStudents = async () => {
+        await getDocs(studentQuery)
+            .then(async (dateSnapshot) => {
+                console.log('datesnapshot: ', dateSnapshot);
+                const date = dateSnapshot.docs[0].get('date');
+
+                await getDocs(query(collection(firestore, `development/${date}/student-data`), orderBy('lastName')))
+                    .then((studentSnapshot) => {
+                        console.log('studentsnapshot: ', studentSnapshot);
+
+                        const result: QueryDocumentSnapshot<DocumentData>[] = [];
+                        studentSnapshot.forEach((student) => {
+                            result.push(student);
+                        });
+
+                        setStudents(result);
+                        setLoading(false);
+                    })
+            });
+    };
+
+    useEffect(() => {
+        getStudents();
+    });
 
     if (!auth.currentUser) {
         return <AdminLogin />
@@ -116,15 +110,17 @@ const AdminPage = () => {
             colorScheme = "gray"
             onClick={logout}
             type="submit"
-            variant="ghost"
-            width="full"
-            >
+            variant="link"
+            width="200px"
+        >
             Sign out
         </Button>
         <Tabs>
             <PDFUpload
-                onChange={onChange}
-                onUploadClick={onUploadClick}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                    setStudentDataFromCSV(event, setStudentData, setStudentDataLoading)
+                }
+                onUploadClick={async () => uploadStudentData(studentData)}
             >
             </PDFUpload>
             <TabList>
@@ -348,7 +344,7 @@ const AdminPage = () => {
                         width="20%" 
                         placeholder='Look up students by name or ID' 
                         value={search}
-                        onChange={handleSearch}
+                        onChange={(event: ChangeEvent<any>) => setSearch(event.target.value.trim())}
                         />
                     </InputGroup>
                     <Container maxW="container.xl" py={20}>
