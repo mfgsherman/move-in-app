@@ -34,10 +34,10 @@ const ChecklistRow: FC<CheckListRowProps> = ({
         <AccordionItem>
             <AccordionButton>
             <Skeleton isLoaded={!loading}>
-                <Tr backgroundColor={loading ? 'gray.100' : incomplete ? 'green.100' : 'red.100'}>
+                <Tr backgroundColor={incomplete ? 'green.100' : 'red.100'}>
                     <Grid templateColumns='repeat(4, 1fr)' gap={4}>
                         <GridItem w={[100,200,300]} >
-                            <Td h={['110px', '80px', '50px', '50px']}>{loading ? 'Loading' : incomplete ? 'Complete' : 'Incomplete'}</Td>
+                            <Td h={['110px', '80px', '50px', '50px']}>{incomplete ? 'Complete' : 'Incomplete'}</Td>
                         </GridItem>
                         <GridItem w={[100,200,300]} >
                             <Td h={['110px', '80px', '50px', '50px']}>{department}</Td>
