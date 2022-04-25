@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react';
 import {Accordion} from '@chakra-ui/accordion';
 import ChecklistHeader from './checklist-header';
-import ChecklistRow from "./check-list-row";
+import ChecklistRow from "./checklist-row";
 import { 
     busOffDescription,
     finAidDescription,
@@ -22,9 +22,9 @@ import {
 } from "../../descriptions";
 
 const StudentChecklist: FC<{
-    student: DocumentSnapshot<DocumentData> | undefined,
-    loading: boolean
-}> = ({student, loading}) => {
+    loading: boolean,
+    student: DocumentSnapshot<DocumentData> | undefined
+}> = ({loading, student}) => {
     const firstName = student?.get('firstName') as string;
     const lastName = student?.get('lastName') as string;
     const busOffCompletion = student?.get('busOff') as boolean;
