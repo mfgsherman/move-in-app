@@ -1,5 +1,6 @@
 import {useState, ChangeEvent} from "react";
 import {useRouter} from "next/router";
+import Image from "next/image";
 import {
     Flex,
     Heading,
@@ -19,6 +20,8 @@ import {
 import Link from "next/link";
 import {auth} from "../firebase/initialize";
 import {signInWithEmailAndPassword} from "firebase/auth";
+import logo from '/public/top-logo.png';
+import campus from '/public/campus-tops.jpg';
 
 const AdminLogin = () => {
     const router = useRouter();
@@ -46,20 +49,50 @@ const AdminLogin = () => {
             flexDirection="column"
             width="100wh"
             height="100vh"
-            backgroundColor="gray.200"
-            justifyContent="center"
+            backgroundColor="brand.700"
+            justifyContent="row-start"
             alignItems="center"
         >
-            <Stack
-                flexDir="column"
-                mb="2"
-                justifyContent="center"
-                alignItems="center"
+            <Box
+                h="309px"
+                w="100%"
+                position="absolute"
+                bottom="0"
             >
-                <Avatar bg="#b30838" />
-                <Heading color= "#b30838">Move-In Day Checklist</Heading>
-                <Heading color= "#b30838">Administrator Dashboard</Heading>
-                <Box minW={{ base: "90%", md: "468px" }} backgroundColor="whiteAlpha.900" boxShadow="md">
+                <Box h="full" w="full" position="relative" >
+                    <Image alt='campus' src={campus} />
+                </Box>   
+                <Box w="100%" h="150px" bgGradient='linear(to-b, brand.700, rgba(0,0,0,0))' position="absolute" top="0"/> 
+            </Box>
+            <Box
+                minW={{ base: "90%", md: "468px" }}
+                pt={'40px'}
+                position="absolute"
+            >
+                <Image alt='logo' src={logo} layout="responsive" />
+            </Box>
+            <Box 
+                minW={{ base: "90%", md: "468px" }}
+                py={'40px'}
+            >
+                <Image alt='logo' src={logo} layout="responsive" />
+            </Box>
+            <Box 
+                mt={'300px'}
+                minW={{ base: "90%", md: "468px" }}
+                backgroundColor="#ffffff"
+                boxShadow="xl"
+                position="absolute"
+            >
+                <Stack
+                    flexDir="column"
+                    mb="2"
+                    justifyContent="center"
+                    alignItems="center"
+                >
+                    <Avatar bg="#b30838" mt={4}/>
+                    <Heading color= "#b30838">Move-In Day Application</Heading>
+                    <Heading color= "#0B0905" size='md'>Administrator Dashboard</Heading>
                     <form>                    
                         <Stack spacing={4} p="1rem">
                         <FormControl>
@@ -97,26 +130,25 @@ const AdminLogin = () => {
                         <Link href={"/admin"} passHref>
                             <Button
                                 borderRadius={0}
-                                color ="#b30838"
-                                colorScheme = "gray"
+                                colorScheme = "brand"
                                 onClick={login}
                                 type="submit"
-                                variant="ghost"
+                                variant="solid"
                                 width="full"
-                                >
-                                Login
+                            >
+                                LOGIN
                             </Button>
                         </Link>
                         </Stack>
-                    </form>                     
-                </Box>
-                {error &&
-                    <Alert status='error'>
-                        <AlertIcon />
-                        <AlertTitle>{errorMessage}</AlertTitle>
-                    </Alert>
-                }                     
-            </Stack>
+                    </form>   
+                </Stack>                  
+            </Box>
+            {error &&
+                <Alert status='error'>
+                    <AlertIcon />
+                    <AlertTitle>{errorMessage}</AlertTitle>
+                </Alert>
+            }                     
         </Flex>
     );
 };

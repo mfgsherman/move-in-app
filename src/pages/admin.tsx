@@ -90,6 +90,7 @@ const AdminPage = () => {
                 type="submit"
                 variant="link"
                 width="200px"
+                pt={5}
             >
                 Sign out
             </Button>
@@ -101,23 +102,22 @@ const AdminPage = () => {
                     onUploadClick={async () => uploadStudentData(studentData)}
                 >
                 </PDFUpload>
-                <TabList>
+                <TabList pt={5} pl={'5%'}>
                     <Tab>All Students</Tab>
                     <Tab>By Department</Tab>
                 </TabList>
                 <TabPanels>
                     <TabPanel>
-                        <InputGroup size='md'>
-                            <Input
-                            id="search"
-                            width="20%" 
-                            placeholder='Look up students by name or ID' 
-                            value={search}
-                            onChange={(event: ChangeEvent<any>) => setSearch(event.target.value.trim())}
-                            />
-                        </InputGroup>
-                        <Container maxW="container.xl" py={20}>
-                            <Heading color= "#b30838">Students</Heading>
+                        <Container maxW="container.xl" py={10}>
+                            <InputGroup size='md' py={5}>
+                                <Input
+                                id="search"
+                                width="40%" 
+                                placeholder='Look up students by name or ID' 
+                                value={search}
+                                onChange={(event: ChangeEvent<any>) => setSearch(event.target.value.trim())}
+                                />
+                            </InputGroup>
                             <StudentsViewTable
                                 loading={loading}
                                 students={filteredStudents}

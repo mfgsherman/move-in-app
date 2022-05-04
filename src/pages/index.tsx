@@ -1,7 +1,11 @@
 import LoginPage from './login'
+import Fonts from '../fonts';
 
 const IndexPage = () => (
-  <LoginPage />
+  <>
+    <Fonts />
+    <LoginPage />
+  </>
 );
 
 export default IndexPage;

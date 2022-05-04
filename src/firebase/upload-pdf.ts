@@ -32,7 +32,7 @@ type SetStudentDataFunction = (students: IStudent[]) => void
 type SetStudentDataLoadingFunction = (loading: boolean) => void
 
 const csvToBool = (completion: string): boolean => (
-    completion === 'Yes' || completion === 'yes' ? 
+    completion === 'YES' || completion === 'yes' ? 
     false : true
 )
 

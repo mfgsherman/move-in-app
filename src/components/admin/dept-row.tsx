@@ -57,7 +57,7 @@ const DeptRow: FC<{
                     ) : (
                         <Table 
                             variant='simple' 
-                            backgroundColor="gray.200"
+                            backgroundColor="#EDEDED"
                         >
                             <Thead>
                                 <Tr>

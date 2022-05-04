@@ -1,5 +1,6 @@
 import {useState, ChangeEvent} from "react";
 import {useRouter} from "next/router";
+import Image from "next/image";
 import {
     doc,
     getDoc,
@@ -25,6 +26,8 @@ import {
     AlertTitle
   } from "@chakra-ui/react";
 import {firestore} from '../firebase/initialize';
+import logo from '/public/top-logo.png';
+import campus from '/public/campus-tops.jpg';
 
 const LoginPage = () => {
     const router = useRouter();
@@ -72,19 +75,43 @@ const LoginPage = () => {
             flexDirection="column"
             width="100wh"
             height="100vh"
-            backgroundColor="gray.200"
-            justifyContent="center"
+            backgroundColor="brand.700"
+            justifyContent="row-start"
             alignItems="center"
         >
-            <Stack
-                flexDir="column"
-                mb="2"
-                justifyContent="center"
-                alignItems="center"
+            <Box
+                h="309px"
+                w="100%"
+                position="absolute"
+                bottom="0"
             >
-                <Avatar bg="#b30838" />
-                <Heading color= "#b30838" >Move-In Day Checklist</Heading>
-                <Box minW={{ base: "90%", md: "468px" }} backgroundColor="whiteAlpha.900" boxShadow="md">
+                <Box h="full" w="full" position="relative" >
+                    <Image alt='campus' src={campus} />
+                </Box>   
+                <Box w="100%" h="150px" bgGradient='linear(to-b, brand.700, rgba(0,0,0,0))' position="absolute" top="0"/> 
+            </Box>
+            <Box
+                minW={{ base: "90%", md: "468px" }}
+                pt={'40px'}
+                position="absolute"
+            >
+                <Image alt='logo' src={logo} layout="responsive" />
+            </Box>
+            <Box 
+                mt={'300px'}
+                minW={{ base: "90%", md: "468px" }}
+                backgroundColor="#ffffff"
+                boxShadow="xl"
+                position="absolute"
+            >
+                <Stack
+                    flexDir="column"
+                    mb="2"
+                    justifyContent="center"
+                    alignItems="center"
+                >
+                    <Avatar bg="#b30838" mt={4}/>
+                    <Heading color= "#b30838" >Move-In Day Checklist</Heading>
                     <form onSubmit={authenticate}>
                         <Stack spacing={4} p="1rem">
                             <FormControl>
@@ -100,25 +127,24 @@ const LoginPage = () => {
                             </FormControl>
                             <Button
                                 borderRadius={0}
-                                color = "#b30838"
-                                // disabled={loading}
+                                colorScheme="brand"
                                 onClick={authenticate}
                                 type="button"
-                                variant="ghost"
+                                variant="solid"
                                 width="full"
-                                >
-                                Login
+                            >
+                                LOGIN
                             </Button>
                         </Stack>
-                    </form>       
-                </Box>  
-                {errorMessage &&
-                    <Alert status='error'>
-                        <AlertIcon />
-                        <AlertTitle>{errorMessage}</AlertTitle>
-                    </Alert>
-                }                      
-            </Stack>
+                    </form>        
+                </Stack>    
+            </Box>
+            {errorMessage &&
+                <Alert status='error'>
+                    <AlertIcon />
+                    <AlertTitle>{errorMessage}</AlertTitle>
+                </Alert>
+            }
         </Flex>
     );
 };

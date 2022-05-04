@@ -35,7 +35,7 @@ const StudentsViewTable: FC<{
         <Table 
             id='studentTable'
             variant='simple'
-            backgroundColor="gray.200"
+            backgroundColor="#EDEDED"
         >
             <Thead>
                 <Tr>
